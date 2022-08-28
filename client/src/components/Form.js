@@ -14,10 +14,11 @@ function Form({ setImageURL }) {
   const handleSubmit = async(e) => {
     e.preventDefault();
     toast('Se está publicando el anuncio', {
-      autoClose: true, 
+      autoClose: 15000, 
       position: 'top-right',
       theme: 'colored',
-      type: 'info'
+      type: 'info',
+      pauseOnFocusLoss: true,
     });
     setIsSubmitting(true);
     try {
@@ -31,7 +32,8 @@ function Form({ setImageURL }) {
           autoClose: true, 
           position: 'top-right',
           theme: 'colored',
-          type: 'error'
+          type: 'error',
+          pauseOnFocusLoss: true
         });
       } else {
         setImageURL(data.data.url);
@@ -39,7 +41,8 @@ function Form({ setImageURL }) {
           autoClose: true, 
           position: 'top-right',
           theme: 'colored',
-          type: 'success'
+          type: 'success',
+          pauseOnFocusLoss: true
         });
       }
     } catch (error) {
