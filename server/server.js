@@ -4,6 +4,8 @@ const { saveAd, imageTest } = require('./functions/saveAd');
 const app = express();
 const path = require('path');
 const cors = require('cors');
+const { validationResult } = require('express-validator');
+const { saveAdValidation } = require('./functions/validations');
 
 const PORT = process.env.PORT || 5000;
 
@@ -18,7 +20,11 @@ app.get('/', async(req, res) => {
   res.send('Hello world');
 });
 
-app.post('/save-ad', async(req, res) => {
+app.post('/save-ad', saveAdValidation, async(req, res) => {
+  const errors = validationResult(req);
+  if(!errors.isEmpty()) {
+    return res.status(400).json(errors);
+  }
   try {
     const id = await saveAd(req.body.price, req.body.description);
     res.json({error: false, url: `http://localhost:${PORT}/images/${id}.png`});

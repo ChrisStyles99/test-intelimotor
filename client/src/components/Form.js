@@ -20,26 +20,39 @@ function Form({ setImageURL }) {
       type: 'info'
     });
     setIsSubmitting(true);
-    const data = await baseInstance.post('/save-ad', {
-      price: formData.price,
-      description: formData.description
-    });
-    if(data.data.error) {
-      setImageURL(null);
-      toast('Hubo un error al publicar el anuncio :(', {
-        autoClose: true, 
-        position: 'top-right',
-        theme: 'colored',
-        type: 'error'
+    try {
+      const data = await baseInstance.post('/save-ad', {
+        price: formData.price,
+        description: formData.description
       });
-    } else {
-      setImageURL(data.data.url);
-      toast('Anuncio publicado con exito', {
-        autoClose: true, 
-        position: 'top-right',
-        theme: 'colored',
-        type: 'success'
-      });
+      if(data.data.error) {
+        setImageURL(null);
+        toast('Hubo un error al publicar el anuncio :(', {
+          autoClose: true, 
+          position: 'top-right',
+          theme: 'colored',
+          type: 'error'
+        });
+      } else {
+        setImageURL(data.data.url);
+        toast('Anuncio publicado con exito', {
+          autoClose: true, 
+          position: 'top-right',
+          theme: 'colored',
+          type: 'success'
+        });
+      }
+    } catch (error) {
+      if(error?.response?.data?.errors?.length > 0) {
+        error?.response?.data?.errors?.forEach(err => {
+          toast(err.msg, {
+            autoClose: true, 
+            position: 'top-right',
+            theme: 'colored',
+            type: 'error'
+          });
+        });
+      }
     }
     setIsSubmitting(false);
     resetForm();
